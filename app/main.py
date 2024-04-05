@@ -80,9 +80,13 @@ def delete_student(id: str):
     else:
         raise HTTPException(status_code=404, detail="Student not found")
 
-@app.get("/")
-def root():
-    return RedirectResponse(url="/students")
+@app.get("/", response_model=str)
+async def root():
+    return "Hello, Server!"
+
+@app.head("/")
+async def head_root():
+    return {"message": "This is the root endpoint."}
 
 if __name__ == "__main__":
     import uvicorn
