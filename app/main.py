@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query
+from starlette.responses import RedirectResponse
 from pydantic import BaseModel
 from pymongo import MongoClient
 from bson import ObjectId
@@ -11,13 +12,10 @@ client = MongoClient("mongodb+srv://undavallijahnavi354:nOLRg7qj0Nr9A1CF@cluster
 db = client["library"]
 students_collection = db["students"]
 
-
-
 class StudentUpdate(BaseModel):
     name: Optional[str] = None
     age: Optional[int] = None
-    address: Optional[address] = None
-
+    address: Optional[dict] = None
 
 class Address(BaseModel):
     city: str
@@ -74,7 +72,6 @@ def update_student(id: str, student: StudentUpdate):
     else:
         raise HTTPException(status_code=404, detail="Student not found")
 
-
 @app.delete("/students/{id}", response_model=dict)
 def delete_student(id: str):
     result = students_collection.delete_one({"_id": ObjectId(id)})
@@ -83,8 +80,10 @@ def delete_student(id: str):
     else:
         raise HTTPException(status_code=404, detail="Student not found")
 
+@app.get("/")
+def root():
+    return RedirectResponse(url="/students")
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
