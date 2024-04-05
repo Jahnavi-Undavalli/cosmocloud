@@ -1,3 +1,4 @@
 fastapi==0.68.0
-pymongo==4.0.1
+pymongo[srv]
 uvicorn==0.15.0
+
